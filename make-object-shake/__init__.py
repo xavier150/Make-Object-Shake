@@ -125,20 +125,6 @@ def SetShakeObj(
 	minScale = 1, 
 	maxScale = 1):
 	
-	"""Trains a linear regression model.
-	Creates an new Empty with a shake animation and add follow contraint to target objet.
-
-	Args:
-	myTargetObj: A `Object` or `PoseBone`, the learning rate.
-	maxRandomOffset: A `int`
-	minScale: A non-zero `float`, 
-	maxScale: A non-zero `float`
-
-	Returns:
-	A `Object` Shake Empty with shake animation
-	"""
-	
-	
 	isPoseBone = False 
 	if type(myTargetObj) == bpy.types.PoseBone:
 		isPoseBone = True
@@ -250,8 +236,11 @@ class MakesActiveObjectShake(bpy.types.Operator):
 			self.report({'WARNING'}, "WARNING: No active object, please select a object.")
 		return {'FINISHED'}
 		
+#############################[...]#############################
+
+
 def register():
-	bpy.utils.register_module(__name__)
+    bpy.utils.register_module(__name__)
 
 def unregister():
-	bpy.utils.unregister_module(__name__)
+    bpy.utils.unregister_module(__name__)
