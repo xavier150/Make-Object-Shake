@@ -6,7 +6,12 @@ This addon allows to easily make an object shake in Blender
 
 Video (Camera): https://youtu.be/40ZOT1nNwF4 </br>
 Video (Bones) : https://youtu.be/3A1WLaytcCk </br>
-Addons page: http://xavierloux.com/creation/view/?creation=make-object-shake
+Addon page: http://xavierloux.com/creation/view/?creation=make-object-shake
+
+# How it works
+In Blender select the object you want to shake, press space bar and write "Makes active object shake"
+Now go in custom properties to edit and animate the shake influence
+
 
 # Installation
 1. Download the latest release https://github.com/xavier150/Make-Object-Shake/releases
@@ -15,3 +20,7 @@ Addons page: http://xavierloux.com/creation/view/?creation=make-object-shake
 3. It should now appear in the window and you can tick the checkbox in the upper right to enable it.
 <img src="https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/InstallationScreen2.jpg" width="600">
 If you would like to have the add-on enabled every time you start Blender, click Save User Settings at the bottom.
+
+Warning, this addon use Driver to work so it is necessary to Run Phyton Scripts.
+If you want Python scripts to be executable every time you start Blender ppen User Preferences (Ctrl+Alt+U) and under File tick the checkbox Auto Run Python Scripts, Then click Save User Settings at the bottom.
+<img src="https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/InstallationScreen3.jpg" width="600">
