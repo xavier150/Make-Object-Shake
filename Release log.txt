@@ -1,3 +1,10 @@
 == Rev 0.1.0 ==
 
 Initial release.
+
+== Rev 0.1.2 ==
+
+Update for Blender 2.8
+Change: Prop Name changed: s_location_x -> Shake_locX
+Change: Shake_Influence use 1 as default and can be overshot to 100
+Change: Shake_Speed Moved in main Object
