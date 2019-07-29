@@ -1,6 +1,9 @@
-# Make-Object-Shake
-Now updated for Blender 2.8
+![alt text](https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/Make%20Object%20Shake%20Featured%20Image.jpg)
+
+# Make Object Shake
 This addon allows to easily make an object shake in Blender, It work with bone, camera, object, [...]
+
+It works with Blender 2.8 and earlier versions
 
 ![alt text](https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/Blender%20Make%20Object%20Shake%20-%202.8.gif)
 ![alt text](https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/Blender%20Camera%20Shake.gif)
@@ -12,6 +15,7 @@ Addon page: http://xavierloux.com/creation/view/?creation=make-object-shake
 # How it works
 In Blender select the object you want to shake, press F3 (Space bar for Blender 2.7 ) and write "Makes active object shake"
 Now go in custom properties to edit and animate the shake influence
+
 
 
 # Installation
