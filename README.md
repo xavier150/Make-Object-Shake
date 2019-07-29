@@ -9,7 +9,7 @@ Video (Bones) : https://youtu.be/3A1WLaytcCk </br>
 Addon page: http://xavierloux.com/creation/view/?creation=make-object-shake
 
 # How it works
-In Blender select the object you want to shake, press space bar and write "Makes active object shake"
+In Blender select the object you want to shake, press F3 (Space bar for Blender 2.7 ) and write "Makes active object shake"
 Now go in custom properties to edit and animate the shake influence
 
 
