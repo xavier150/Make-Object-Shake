@@ -79,7 +79,7 @@ def CreateShakeConstraint(obj, ShakeObj, constType, axe):
 	#Create drivers on constraint
 	
 	if isPoseBone == True:
-		myDriver = bpy.context.scene.objects.active.driver_add('pose.bones["'+obj.name+'"].constraints["'+myConst.name+'"].influence')
+		myDriver = bpy.context.view_layer.objects.active.driver_add('pose.bones["'+obj.name+'"].constraints["'+myConst.name+'"].influence')
 	else:
 		myDriver = obj.driver_add('constraints["'+myConst.name+'"].influence')
 
@@ -186,7 +186,20 @@ def SetShakeObj(
 		SpeedVar = driver.driver.variables.new()
 		SpeedVar.name = "shake_speed"
 		SpeedVar.targets[0].id_type = 'OBJECT'
-		SpeedVar.targets[0].id = myTargetObj	
+		if isPoseBone == True: 
+			#SpeedVar.targets[0].id_type = 'ARMATURE'
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			SpeedVar.targets[0].id = myTargetObj.id_data
+			SpeedVar.targets[0].data_path = 'bones["'+myTargetObj.name+'"]'
+		else:
+			SpeedVar.targets[0].id = myTargetObj	
 		SpeedVar.targets[0].data_path = ShakeEmptySpeedProp
 		
 		driver.driver.expression = "shake_speed * 100 * frame"
