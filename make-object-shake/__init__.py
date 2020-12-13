@@ -29,8 +29,8 @@ bl_info = {
     'description': "This addon allows to easily make an object shake",
     'author': 'Loux Xavier (BleuRaven)',
     'version': (0, 1, 3),
-    'blender': (2, 80, 0),
-    'location': 'Search > Make active shake',
+    'blender': (2, 91, 0),
+    'location': 'VIEW_3D > OBJECT > Make active shake',
     'warning': '',
     "wiki_url":
     "https://github.com/xavier150/Make-Object-Shake",
@@ -85,7 +85,7 @@ def CreateShakeConstraint(obj, ShakeObj, constType, axe):
         DS = ('pose.bones["'+obj.name+'"].'+cS)
         myDriver = bpy.context.view_layer.objects.active.driver_add(DS)
     else:
-        myDriver = obj.driver_add()
+        myDriver = obj.driver_add(cS)
 
     # Prepar driver var
     if isPoseBone:
@@ -134,8 +134,7 @@ def SetShakeObj(myTargetObj, maxRandomOffset=0, minScale=1, maxScale=1):
     # Create shake empty
     myShakeEmptyName = 'ShakePoint_' + myTargetObj.name
     if isPoseBone:
-        myShakeEmptyName =
-        ('ShakePoint_' + myTargetObj.id_data.name + '_' + myTargetObj.name)
+        myShakeEmptyName = ('ShakePoint_' + myTargetObj.id_data.name + '_' + myTargetObj.name)
     if myShakeEmptyName in bpy.data.objects:
         myShakeEmpty = bpy.data.objects[myShakeEmptyName]
     else:
@@ -215,6 +214,8 @@ def SetShakeObj(myTargetObj, maxRandomOffset=0, minScale=1, maxScale=1):
             # Variable on driver
             for var in driver.driver.variables:
                 driver.driver.variables.remove(var)
+    except:
+        pass
 
     CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_LOCATION", "X")
     CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_LOCATION", "Y")
@@ -224,32 +225,63 @@ def SetShakeObj(myTargetObj, maxRandomOffset=0, minScale=1, maxScale=1):
     CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_ROTATION", "Z")
 
 
-class MOS_OT_MakesActiveObjectShake(bpy.types.Operator):
-    bl_label = "Makes active object shake"
-    bl_idname = "object.makesactiveshake"
-    bl_description = "Set the active object shaken and add customs properties."
-    bl_options = {"REGISTER", "UNDO"}
+class MOS_PT_MakeObjectShake(bpy.types.Panel):
 
-    def execute(self, context):
-        if bpy.context.object.mode == "POSE":
-            ActiveObj = bpy.context.active_pose_bone
-        else:
-            ActiveObj = bpy.context.view_layer.objects.active
+    bl_idname = "MOS_PT_ObjectShake"
+    bl_label = "ObjectShake"
+    bl_space_type = 'VIEW_3D'
+    bl_context_mode = 'OBJECT'
+    bl_category = "Make Object Shake"
 
-        if ActiveObj is not None:
-            SetShakeObj(ActiveObj, 10000, 95, 105)
-            self.report({'INFO'}, "Active object is shaken, "
-                        "look in customs properties.")
-        else:
-            self.report({'WARNING'}, "WARNING: No active object, "
-                        "please select a object.")
-        return {'FINISHED'}
+    class MOS_OT_MakesActiveObjectShake(bpy.types.Operator):
+        bl_label = "Make active shake"
+        bl_idname = "object.makesactiveshake"
+        bl_description = "Set the active object shaken and add customs properties."
+        bl_options = {"REGISTER", "UNDO"}
+
+        def execute(self, context):
+            if bpy.context.object.mode == "POSE":
+                ActiveObj = bpy.context.active_pose_bone
+            else:
+                ActiveObj = bpy.context.view_layer.objects.active
+
+            if ActiveObj is not None:
+                SetShakeObj(ActiveObj, 10000, 95, 105)
+                self.report({'INFO'}, "Active object is shaken, "
+                            "look in customs properties.")
+            else:
+                self.report({'WARNING'}, "WARNING: No active object, "
+                            "please select a object.")
+            return {'FINISHED'}
 
 # ############################[...]#############################
 
 
 classes = (
-    MOS_OT_MakesActiveObjectShake,
+    MOS_PT_MakeObjectShake.MOS_OT_MakesActiveObjectShake,
 )
 
-register, unregister = bpy.utils.register_classes_factory(classes)
+
+def menu_func(self, context):
+    layout = self.layout
+    col = layout.column()
+    col.separator(factor=1.0)
+    col.operator(MOS_PT_MakeObjectShake.MOS_OT_MakesActiveObjectShake.bl_idname)
+
+
+def register():
+    from bpy.utils import register_class
+
+    for cls in classes:
+        register_class(cls)
+
+    bpy.types.VIEW3D_MT_object.append(menu_func)
+
+
+def unregister():
+    from bpy.utils import unregister_class
+
+    for cls in reversed(classes):
+        unregister_class(cls)
+
+    bpy.types.VIEW3D_MT_object.remove(menu_func)
