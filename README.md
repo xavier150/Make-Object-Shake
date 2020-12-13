@@ -38,7 +38,7 @@ For Blender 2.7:
 1. Download the latest release:
 [Blender 2.7](https://github.com/xavier150/Make-Object-Shake/releases/download/v0.1.0/make-object-shake.zip)
  | 
-[Blender 2.8 and 2.9](https://github.com/xavier150/Make-Object-Shake/releases/download/v0.1.3/make-object-shake_2.8.zip)
+[Blender 2.8 and 2.9](https://github.com/xavier150/Make-Object-Shake/releases/download/v0.1.3/make-object-shake.zip)
 
 2. Open User Preferences (Ctrl+Alt+U) and under Add-ons, click Install from File. Then navigate to the file you downloaded and select it.
 <img src="https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/InstallationScreen1.jpg" width="600">
