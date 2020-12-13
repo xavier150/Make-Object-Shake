@@ -46,8 +46,6 @@ For Blender 2.7:
 <img src="https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/InstallationScreen2.jpg" width="600">
 If you would like to have the add-on enabled every time you start Blender, click Save User Settings at the bottom.</br>
 </br>
-This addon use Driver to work so it is necessary to Run Phyton Scripts. If you want Python scripts to be executable every time you start Blender ppen User Preferences (Ctrl+Alt+U) and under File tick the checkbox Auto Run Python Scripts, Then click Save User Settings at the bottom.
-<img src="https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/InstallationScreen3.jpg" width="600">
 
 # Other
 If you want support me you can buy the addon on [BlenderMarket](https://blendermarket.com/products/make-object-shake) or [Gumroad](https://gumroad.com/l/Make-Object-Shake)
