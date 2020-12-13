@@ -8,3 +8,9 @@ Update for Blender 2.8
 Change: Prop Name changed: s_location_x -> Shake_locX
 Change: Shake_Influence use 1 as default and can be overshot to 100
 Change: Shake_Speed Moved in main Object
+
+== Rev 0.1.3 ==
+
+Update for Blender 2.9
+Change: Operator location moved to VIEW_3D > OBJECT > Make active shake
+
