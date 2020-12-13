@@ -3,7 +3,7 @@
 # Make Object Shake
 This addon allows to easily make an object shake in Blender, It work with bone, camera, object, [...]
 
-It works with Blender 2.8 and earlier versions
+It works with Blender 2.9 and earlier versions
 
 ![alt text](https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/Blender%20Make%20Object%20Shake%20-%202.8.gif)
 ![alt text](https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/Blender%20Camera%20Shake.gif)
@@ -13,8 +13,24 @@ Video (Bones) : https://youtu.be/3A1WLaytcCk </br>
 Addon page: http://xavierloux.com/creation/view/?creation=make-object-shake
 
 # How it works
-In Blender select the object you want to shake, press F3 (Space bar for Blender 2.7 ) and write "Makes active object shake"
-Now go in custom properties to edit and animate the shake influence
+
+For Blender 2.8 and 2.9:
+
+Objects and Camera: 
+- In Blender select the object you want to shake.
+- Execute operator VIEW_3D > OBJECT > Make active object shake
+- Now go in custom properties to edit and animate the shake influence
+
+Bones: 
+- In Blender select in Pose Mode the bone you want to shake
+- Execute operator VIEW_3D > POSE > Make active bone shake
+- Now go in custom properties to edit and animate the shake influence
+
+
+For Blender 2.7:
+- In Blender select the object you want to shake, 
+- press Space bar for and write "Makes active object shake"
+- Now go in custom properties to edit and animate the shake influence
 
 
 
@@ -22,7 +38,7 @@ Now go in custom properties to edit and animate the shake influence
 1. Download the latest release:
 [Blender 2.7](https://github.com/xavier150/Make-Object-Shake/releases/download/v0.1.0/make-object-shake.zip)
  | 
-[Blender 2.8](https://github.com/xavier150/Make-Object-Shake/releases/download/v0.1.2/make-object-shake_2.8.zip)
+[Blender 2.8 and 2.9](https://github.com/xavier150/Make-Object-Shake/releases/download/v0.1.3/make-object-shake_2.8.zip)
 
 2. Open User Preferences (Ctrl+Alt+U) and under Add-ons, click Install from File. Then navigate to the file you downloaded and select it.
 <img src="https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/InstallationScreen1.jpg" width="600">

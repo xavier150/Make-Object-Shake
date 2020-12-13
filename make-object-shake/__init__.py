@@ -233,9 +233,9 @@ class MOS_PT_MakeObjectShake(bpy.types.Panel):
     bl_context_mode = 'OBJECT'
     bl_category = "Make Object Shake"
 
-    class MOS_OT_MakesActiveObjectShake(bpy.types.Operator):
-        bl_label = "Make active shake"
-        bl_idname = "object.makesactiveshake"
+    class MOS_OT_MakeActiveObjectShake(bpy.types.Operator):
+        bl_label = "Make active object shake"
+        bl_idname = "object.make_active_object_shake"
         bl_description = "Set the active object shaken and add customs properties."
         bl_options = {"REGISTER", "UNDO"}
 
@@ -254,19 +254,48 @@ class MOS_PT_MakeObjectShake(bpy.types.Panel):
                             "please select a object.")
             return {'FINISHED'}
 
+    class MOS_OT_MakeActiveBoneShake(bpy.types.Operator):
+        bl_label = "Make active bone shake"
+        bl_idname = "object.make_active_bone_shake"
+        bl_description = "Set the active bone shaken and add customs properties."
+        bl_options = {"REGISTER", "UNDO"}
+
+        def execute(self, context):
+            if bpy.context.object.mode == "POSE":
+                ActiveObj = bpy.context.active_pose_bone
+            else:
+                ActiveObj = bpy.context.view_layer.objects.active
+
+            if ActiveObj is not None:
+                SetShakeObj(ActiveObj, 10000, 95, 105)
+                self.report({'INFO'}, "Active bone is shaken, "
+                            "look in customs properties.")
+            else:
+                self.report({'WARNING'}, "WARNING: No active object, "
+                            "please select a bone in PoseBone.")
+            return {'FINISHED'}
+
 # ############################[...]#############################
 
 
 classes = (
-    MOS_PT_MakeObjectShake.MOS_OT_MakesActiveObjectShake,
+    MOS_PT_MakeObjectShake.MOS_OT_MakeActiveObjectShake,
+    MOS_PT_MakeObjectShake.MOS_OT_MakeActiveBoneShake,
 )
 
 
-def menu_func(self, context):
+def menu_func_object(self, context):
     layout = self.layout
     col = layout.column()
     col.separator(factor=1.0)
-    col.operator(MOS_PT_MakeObjectShake.MOS_OT_MakesActiveObjectShake.bl_idname)
+    col.operator(MOS_PT_MakeObjectShake.MOS_OT_MakeActiveObjectShake.bl_idname)
+
+
+def menu_func_bone(self, context):
+    layout = self.layout
+    col = layout.column()
+    col.separator(factor=1.0)
+    col.operator(MOS_PT_MakeObjectShake.MOS_OT_MakeActiveBoneShake.bl_idname)
 
 
 def register():
@@ -275,7 +304,8 @@ def register():
     for cls in classes:
         register_class(cls)
 
-    bpy.types.VIEW3D_MT_object.append(menu_func)
+    bpy.types.VIEW3D_MT_object.append(menu_func_object)
+    bpy.types.VIEW3D_MT_pose.append(menu_func_bone)
 
 
 def unregister():
@@ -284,4 +314,5 @@ def unregister():
     for cls in reversed(classes):
         unregister_class(cls)
 
-    bpy.types.VIEW3D_MT_object.remove(menu_func)
+    bpy.types.VIEW3D_MT_object.remove(menu_func_object)
+    bpy.types.VIEW3D_MT_pose.remove(menu_func_bone)
