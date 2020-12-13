@@ -24,8 +24,8 @@ bl_info = {
 	'name': 'Make Object Shake',
 	'description': "This addon allows to easily make an object shake",
 	'author': 'Loux Xavier (BleuRaven)',
-	'version': (0, 1, 0),
-	'blender': (2, 79, 0),
+	'version': (0, 1, 2),
+	'blender': (2, 80, 0),
 	'location': 'Search > Make active shake',
 	'warning': '',
 	"wiki_url": "http://xavierloux.com/creation/view/?creation=make-object-shake",
@@ -37,13 +37,13 @@ import bpy
 from random import randrange, uniform
 from rna_prop_ui import rna_idprop_ui_prop_get
 
-def createCustomProp(target, defaultValue, propName, description):
+def createCustomProp(target, defaultValue, propName, description, max = 1.0):
 	target[propName]=defaultValue
 	prop_ui = rna_idprop_ui_prop_get(target, propName)
 	prop_ui["min"] = 0.0
-	prop_ui["max"] = 1.0
+	prop_ui["max"] = max
 	prop_ui["soft_min"] = 0.0
-	prop_ui["soft_max"] = 1.0
+	prop_ui["soft_max"] = max
 	prop_ui["description"] = description
 	
 	DataPath = '["'+propName+'"]'
@@ -67,9 +67,9 @@ def CreateShakeConstraint(obj, ShakeObj, constType, axe):
 		myConst.name = constraintName
 		
 	#Set constraints props
-	myConst.use_x = True if axe =="x" else False
-	myConst.use_y = True if axe =="y" else False
-	myConst.use_z = True if axe =="z" else False
+	myConst.use_x = True if axe =="X" else False
+	myConst.use_y = True if axe =="Y" else False
+	myConst.use_z = True if axe =="Z" else False
 	myConst.use_offset = True
 	myConst.target_space = 'WORLD'
 	myConst.owner_space = 'LOCAL'
@@ -79,7 +79,7 @@ def CreateShakeConstraint(obj, ShakeObj, constType, axe):
 	#Create drivers on constraint
 	
 	if isPoseBone == True:
-		myDriver = bpy.context.scene.objects.active.driver_add('pose.bones["'+obj.name+'"].constraints["'+myConst.name+'"].influence')
+		myDriver = bpy.context.view_layer.objects.active.driver_add('pose.bones["'+obj.name+'"].constraints["'+myConst.name+'"].influence')
 	else:
 		myDriver = obj.driver_add('constraints["'+myConst.name+'"].influence')
 
@@ -97,15 +97,15 @@ def CreateShakeConstraint(obj, ShakeObj, constType, axe):
 	SpeedVar.targets[0].id = varObjID
 		
 	if isPoseBone == True:
-		SpeedVar.targets[0].data_path = 'pose.bones["'+obj.name+'"]["S_Influence"]'
+		SpeedVar.targets[0].data_path = 'pose.bones["'+obj.name+'"]["Shake_Influence"]'
 	else:
-		SpeedVar.targets[0].data_path = '["S_Influence"]'
+		SpeedVar.targets[0].data_path = '["Shake_Influence"]'
 	
 	#relative Speed driver var
 	if constType == "COPY_LOCATION":
-		propType = "location"
+		propType = "loc"
 	if constType == "COPY_ROTATION":
-		propType = "rotation"
+		propType = "rot"
 	
 	SpeedVar = myDriver.driver.variables.new()
 	SpeedVar.name = "relative_intensity"
@@ -113,11 +113,11 @@ def CreateShakeConstraint(obj, ShakeObj, constType, axe):
 	SpeedVar.targets[0].id = varObjID
 
 	if isPoseBone == True:
-		SpeedVar.targets[0].data_path = 'pose.bones["'+obj.name+'"]["S_'+propType+'_'+axe+'"]'
+		SpeedVar.targets[0].data_path = 'pose.bones["'+obj.name+'"]["Shake_'+propType+axe+'"]'
 	else:
-		SpeedVar.targets[0].data_path = '["S_'+propType+'_'+axe+'"]'
+		SpeedVar.targets[0].data_path = '["Shake_'+propType+axe+'"]'
 	
-	myDriver.driver.expression = "global_intensity * relative_intensity"	
+	myDriver.driver.expression = "global_intensity / 100 * relative_intensity"	
 
 def SetShakeObj(
 	myTargetObj, 
@@ -133,14 +133,13 @@ def SetShakeObj(
 	myShakeEmptyName = 'ShakePoint_' + myTargetObj.name
 	if isPoseBone == True:
 		myShakeEmptyName = 'ShakePoint_' + myTargetObj.id_data.name + '_' + myTargetObj.name
-	try:
+	if myShakeEmptyName in bpy.data.objects:
 		myShakeEmpty = bpy.data.objects[myShakeEmptyName]
-	except:
+	else:
 		myShakeEmpty = bpy.data.objects.new(myShakeEmptyName, None)
 		myShakeEmpty.location = (0.0,0.0,0.0)
-		myShakeEmpty.empty_draw_size = 0.45
-		bpy.context.scene.objects.link(myShakeEmpty)
-		bpy.context.scene.update()
+		myShakeEmpty.empty_display_size = 0.45
+		bpy.context.scene.collection.objects.link(myShakeEmpty)
 		
 	#if isPoseBone == True:
 		#myShakeEmpty.parent = 
@@ -148,14 +147,14 @@ def SetShakeObj(
 		#myShakeEmpty.parent = myTargetObj
 
 	#Create Custom propertys 
-	ShakeEmptySpeedProp = createCustomProp(myShakeEmpty, 1.0, 'S_Speed',"Global shake speed")
-	createCustomProp(myTargetObj, 0.05, "S_Influence","Global shake intensity")
-	createCustomProp(myTargetObj, 1.0, 'S_location_x',"Shake intensity of Location X")
-	createCustomProp(myTargetObj, 1.0, 'S_location_y',"Shake intensity of Location Y")
-	createCustomProp(myTargetObj, 1.0, 'S_location_z',"Shake intensity of Location Z")
-	createCustomProp(myTargetObj, 1.0, 'S_rotation_x',"Shake intensity of Rotation Euler X")
-	createCustomProp(myTargetObj, 1.0, 'S_rotation_y',"Shake intensity of Rotation Euler Y")
-	createCustomProp(myTargetObj, 1.0, 'S_rotation_z',"Shake intensity of Rotation Euler Z")
+	ShakeEmptySpeedProp = createCustomProp(myTargetObj, 1.0, 'Shake_Speed',"Global shake speed")
+	createCustomProp(myTargetObj, 1.0, 'Shake_Influence',"Global shake intensity", 100.0)
+	createCustomProp(myTargetObj, 1.0, 'Shake_locX',"Shake intensity of Location X")
+	createCustomProp(myTargetObj, 1.0, 'Shake_locY',"Shake intensity of Location Y")
+	createCustomProp(myTargetObj, 1.0, 'Shake_locZ',"Shake intensity of Location Z")
+	createCustomProp(myTargetObj, 1.0, 'Shake_rotX',"Shake intensity of Rotation Euler X")
+	createCustomProp(myTargetObj, 1.0, 'Shake_rotY',"Shake intensity of Rotation Euler Y")
+	createCustomProp(myTargetObj, 1.0, 'Shake_rotz',"Shake intensity of Rotation Euler Z")
 
 	#Create drivers for shake animation
 	myShakeEmpty.driver_add("location")
@@ -167,8 +166,7 @@ def SetShakeObj(
 		#Keyframes of drivers
 		for key in driver.keyframe_points:
 			driver.keyframe_points.remove(driver.keyframe_points[0])
-		driver.keyframe_points.add()
-		driver.keyframe_points.add()
+		driver.keyframe_points.add(2)
 		driver.keyframe_points[0].co = (0,0)
 		driver.keyframe_points[1].co = (1,0)
 		
@@ -184,21 +182,27 @@ def SetShakeObj(
 		for var in driver.driver.variables:
 			driver.driver.variables.remove(var)
 		
-		#Add Current time Driver Var
-		FrameVar = driver.driver.variables.new()
-		FrameVar.name = "cur_time"
-		FrameVar.targets[0].id_type = 'SCENE'
-		FrameVar.targets[0].id = bpy.context.scene	
-		FrameVar.targets[0].data_path = "frame_current"
-		
 		#Add Speed Driver Var
 		SpeedVar = driver.driver.variables.new()
 		SpeedVar.name = "shake_speed"
 		SpeedVar.targets[0].id_type = 'OBJECT'
-		SpeedVar.targets[0].id = myShakeEmpty	
+		if isPoseBone == True: 
+			#SpeedVar.targets[0].id_type = 'ARMATURE'
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			print(myTargetObj.id_data)
+			SpeedVar.targets[0].id = myTargetObj.id_data
+			SpeedVar.targets[0].data_path = 'bones["'+myTargetObj.name+'"]'
+		else:
+			SpeedVar.targets[0].id = myTargetObj	
 		SpeedVar.targets[0].data_path = ShakeEmptySpeedProp
 		
-		driver.driver.expression = "cur_time * shake_speed"
+		driver.driver.expression = "shake_speed * 100 * frame"
 
 	
 	try:
@@ -209,15 +213,15 @@ def SetShakeObj(
 	except:
 		pass
 	
-	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_LOCATION", "x")
-	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_LOCATION", "y")
-	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_LOCATION", "z")
-	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_ROTATION", "x")
-	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_ROTATION", "y")
-	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_ROTATION", "z")
+	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_LOCATION", "X")
+	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_LOCATION", "Y")
+	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_LOCATION", "Z")
+	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_ROTATION", "X")
+	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_ROTATION", "Y")
+	CreateShakeConstraint(myTargetObj, myShakeEmpty, "COPY_ROTATION", "Z")
 
 		
-class MakesActiveObjectShake(bpy.types.Operator):
+class MOS_OT_MakesActiveObjectShake(bpy.types.Operator):
 	bl_label = "Makes active object shake"
 	bl_idname = "object.makesactiveshake"
 	bl_description = "Set the active object shaken and add customs properties."
@@ -227,10 +231,10 @@ class MakesActiveObjectShake(bpy.types.Operator):
 		if bpy.context.object.mode == "POSE":
 			ActiveObj = bpy.context.active_pose_bone
 		else:
-			ActiveObj = bpy.context.scene.objects.active
+			ActiveObj = bpy.context.view_layer.objects.active
 			
 		if ActiveObj is not None:
-			SetShakeObj(ActiveObj, 100, 0.95, 1.05)
+			SetShakeObj(ActiveObj, 10000, 95, 105)
 			self.report({'INFO'}, "Active object is shaken, look in customs properties.")
 		else:
 			self.report({'WARNING'}, "WARNING: No active object, please select a object.")
@@ -238,9 +242,8 @@ class MakesActiveObjectShake(bpy.types.Operator):
 		
 #############################[...]#############################
 
+classes = (
+	MOS_OT_MakesActiveObjectShake,
+)
 
-def register():
-    bpy.utils.register_module(__name__)
-
-def unregister():
-    bpy.utils.unregister_module(__name__)
+register, unregister = bpy.utils.register_classes_factory(classes)
