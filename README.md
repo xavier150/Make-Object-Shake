@@ -40,7 +40,7 @@ For Blender 2.7:
  | 
 [Blender 2.8 and 2.9](https://github.com/xavier150/Make-Object-Shake/releases/download/v0.1.3/make-object-shake.zip)
 
-2. Open User Preferences (Ctrl+Alt+U) and under Add-ons, click Install from File. Then navigate to the file you downloaded and select it.
+2. Open User Preferences (Ctrl+Alt+U) and under Add-ons, click Install from File. Then navigate to the .zip file you downloaded and select it.
 <img src="https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/InstallationScreen1.jpg" width="600">
 3. It should now appear in the window and you can tick the checkbox in the upper right to enable it.
 <img src="https://github.com/xavier150/Make-Object-Shake/blob/master/Tuto/InstallationScreen2.jpg" width="600">
