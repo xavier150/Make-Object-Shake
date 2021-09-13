@@ -14,3 +14,7 @@ Change: Shake_Speed Moved in main Object
 Update for Blender 2.9
 Change: Operator location moved to VIEW_3D > OBJECT > Make active shake
 
+== Rev 0.1.4 ==
+
+Update for Blender 3.0
+Fixed: Custom property do script error in Blender 3.0 (IDProperty UI data storage was refactored.)

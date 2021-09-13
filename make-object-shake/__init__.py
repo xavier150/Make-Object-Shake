@@ -22,13 +22,12 @@
 
 import bpy
 from random import randrange, uniform
-from rna_prop_ui import rna_idprop_ui_prop_get
 
 bl_info = {
     'name': 'Make Object Shake',
     'description': "This addon allows to easily make an object shake",
     'author': 'Loux Xavier (BleuRaven)',
-    'version': (0, 1, 3),
+    'version': (0, 1, 4),
     'blender': (2, 91, 0),
     'location': 'VIEW_3D > OBJECT > Make active shake',
     'warning': '',
@@ -39,16 +38,44 @@ bl_info = {
     'category': '3D_interaction'}
 
 
-def createCustomProp(target, defaultValue, propName, description, max=1.0):
-    target[propName] = defaultValue
-    prop_ui = rna_idprop_ui_prop_get(target, propName)
-    prop_ui["min"] = 0.0
-    prop_ui["max"] = max
-    prop_ui["soft_min"] = 0.0
-    prop_ui["soft_max"] = max
-    prop_ui["description"] = description
+def createCustomProp(target, default_value, property_name, description, max=1.0):
 
-    DataPath = '["'+propName+'"]'
+    if bpy.app.version < (3, 0, 0):
+        if not target.get('_RNA_UI'):
+            target['_RNA_UI'] = {}
+
+    # set it
+    target[property_name] = default_value
+
+    # property attributes.for UI
+    if bpy.app.version < (3, 0, 0):
+        target['_RNA_UI'][property_name] = {
+            "default": default_value,
+            "min": 0.0,
+            "max": max,
+            "soft_min": 0.0,
+            "soft_max": max,
+            "description": description
+            }
+    else:
+        target.id_properties_ui(property_name).update(
+            default=default_value,
+            min=0.0,
+            max=max,
+            soft_min=0.0,
+            soft_max=max,
+            description=description)
+
+    # redraw Properties panel
+    for window in bpy.context.window_manager.windows:
+        screen = window.screen
+
+        for area in screen.areas:
+            if area.type == 'PROPERTIES':
+                area.tag_redraw()
+                break
+
+    DataPath = '["'+property_name+'"]'
     if type(target) == bpy.types.PoseBone:
         DataPath = 'pose.bones["'+target.name+'"]'+DataPath
     return DataPath
@@ -144,22 +171,14 @@ def SetShakeObj(myTargetObj, maxRandomOffset=0, minScale=1, maxScale=1):
         bpy.context.scene.collection.objects.link(myShakeEmpty)
 
     # Create Custom propertys
-    ShakeEmptySpeedProp = createCustomProp(
-        myTargetObj, 1.0, 'Shake_Speed', "Global shake speed")
-    createCustomProp(
-        myTargetObj, 1.0, 'Shake_Influence', "Global shake intensity", 100.0)
-    createCustomProp(
-        myTargetObj, 1.0, 'Shake_locX', "Shake intensity of Location X")
-    createCustomProp(
-        myTargetObj, 1.0, 'Shake_locY', "Shake intensity of Location Y")
-    createCustomProp(
-        myTargetObj, 1.0, 'Shake_locZ', "Shake intensity of Location Z")
-    createCustomProp(
-        myTargetObj, 1.0, 'Shake_rotX', "Shake intensity of Rotation Euler X")
-    createCustomProp(
-        myTargetObj, 1.0, 'Shake_rotY', "Shake intensity of Rotation Euler Y")
-    createCustomProp(
-        myTargetObj, 1.0, 'Shake_rotz', "Shake intensity of Rotation Euler Z")
+    ShakeEmptySpeedProp = createCustomProp(myTargetObj, 1.0, 'Shake_Speed', "Global shake speed")
+    createCustomProp(myTargetObj, 1.0, 'Shake_Influence', "Global shake intensity", 100.0)
+    createCustomProp(myTargetObj, 1.0, 'Shake_locX', "Shake intensity of Location X")
+    createCustomProp(myTargetObj, 1.0, 'Shake_locY', "Shake intensity of Location Y")
+    createCustomProp(myTargetObj, 1.0, 'Shake_locZ', "Shake intensity of Location Z")
+    createCustomProp(myTargetObj, 1.0, 'Shake_rotX', "Shake intensity of Rotation Euler X")
+    createCustomProp(myTargetObj, 1.0, 'Shake_rotY', "Shake intensity of Rotation Euler Y")
+    createCustomProp(myTargetObj, 1.0, 'Shake_rotz', "Shake intensity of Rotation Euler Z")
 
     # Create drivers for shake animation
     myShakeEmpty.driver_add("location")
