@@ -14,7 +14,7 @@ Addon page: http://xavierloux.com/creation/view/?creation=make-object-shake
 
 # How it works
 
-For Blender 2.8 and 2.9:
+For Blender 2.8, 2.9 and 3.0
 
 Objects and Camera: 
 - In Blender select the object you want to shake.
